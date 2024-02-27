@@ -10,6 +10,7 @@ import { StatusCodes } from 'http-status-codes';
 
 import { envConfig } from './config';
 import elasticSearch from './elasticsearch';
+import healthRouter from './routes/health.routes';
 
 const SERVER_PORT = 4000;
 const logger = winstonLogger(`${envConfig.ELASTIC_SEARCH_URL}`, 'apiGatewayServer', 'debug');
@@ -24,7 +25,7 @@ export default class ApiGatewayServer {
   public start() {
     this.securityMiddleware(this.app);
     this.standardMiddleware(this.app);
-    // this.routeMiddleware(this.app);
+    this.routeMiddleware(this.app);
     this.startElasticSearch();
     this.errorHandler(this.app);
     this.startServer(this.app);
@@ -57,7 +58,9 @@ export default class ApiGatewayServer {
     app.use(json());
   }
 
-  // private routeMiddleware(app: Application) {}
+  private routeMiddleware(app: Application) {
+    app.use(healthRouter);
+  }
 
   private async startElasticSearch() {
     await elasticSearch.checkConnection();
