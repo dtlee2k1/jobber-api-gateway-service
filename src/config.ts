@@ -3,8 +3,8 @@ import dotenv from 'dotenv';
 dotenv.config({});
 
 class Config {
-  public JWT_TOKEN: string | undefined;
-  public GATEWAY_JWT_TOKEN: string | undefined;
+  public JWT_TOKEN: string | undefined; // Authentication token between client and API gateway
+  public GATEWAY_JWT_TOKEN: string | undefined; // Authentication token between microservice and API gateway
   public NODE_ENV: string | undefined;
   public SECRET_KEY_ONE: string | undefined;
   public SECRET_KEY_TWO: string | undefined;
