@@ -9,6 +9,7 @@ import cors from 'cors';
 import { StatusCodes } from 'http-status-codes';
 
 import { envConfig } from './config';
+import elasticSearch from './elasticsearch';
 
 const SERVER_PORT = 4000;
 const logger = winstonLogger(`${envConfig.ELASTIC_SEARCH_URL}`, 'apiGatewayServer', 'debug');
@@ -58,7 +59,9 @@ export default class ApiGatewayServer {
 
   // private routeMiddleware(app: Application) {}
 
-  private startElasticSearch() {}
+  private async startElasticSearch() {
+    await elasticSearch.checkConnection();
+  }
 
   private errorHandler(app: Application) {
     app.use('*', (req: Request, res: Response, next: NextFunction) => {
