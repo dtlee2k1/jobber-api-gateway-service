@@ -8,8 +8,10 @@ import hpp from 'hpp';
 import cors from 'cors';
 import { StatusCodes } from 'http-status-codes';
 
+import { envConfig } from './config';
+
 const SERVER_PORT = 4000;
-const logger = winstonLogger('', 'apiGatewayServer', 'debug');
+const logger = winstonLogger(`${envConfig.ELASTIC_SEARCH_URL}`, 'apiGatewayServer', 'debug');
 
 export default class ApiGatewayServer {
   private app: Application;
@@ -21,7 +23,7 @@ export default class ApiGatewayServer {
   public start() {
     this.securityMiddleware(this.app);
     this.standardMiddleware(this.app);
-    this.routeMiddleware(this.app);
+    // this.routeMiddleware(this.app);
     this.startElasticSearch();
     this.errorHandler(this.app);
     this.startServer(this.app);
@@ -32,9 +34,9 @@ export default class ApiGatewayServer {
     app.use(
       cookieSession({
         name: 'session',
-        keys: [],
+        keys: [`${envConfig.SECRET_KEY_ONE}`, `${envConfig.SECRET_KEY_TWO}`],
         maxAge: 24 * 7 * 60 * 60 * 1000, // 7 days,
-        secure: false
+        secure: envConfig.NODE_ENV !== 'development'
         // sameSite: 'none'
       })
     );
@@ -42,7 +44,7 @@ export default class ApiGatewayServer {
     app.use(helmet());
     app.use(
       cors({
-        origin: '*',
+        origin: envConfig.CLIENT_URL,
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
       })
@@ -54,7 +56,7 @@ export default class ApiGatewayServer {
     app.use(json());
   }
 
-  private routeMiddleware(app: Application) {}
+  // private routeMiddleware(app: Application) {}
 
   private startElasticSearch() {}
 
