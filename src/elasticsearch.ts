@@ -17,6 +17,7 @@ class ElasticSearch {
   public async checkConnection() {
     let isConnected = false;
     while (!isConnected) {
+      logger.info('ApiGatewayService connecting to ElasticSearch...');
       try {
         const health = await this.elasticSearchClient.cluster.health({});
         logger.info(`ApiGatewayService Elasticsearch health status - ${health.status}`);

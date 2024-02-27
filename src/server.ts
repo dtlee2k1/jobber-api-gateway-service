@@ -7,6 +7,7 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import cors from 'cors';
 import { StatusCodes } from 'http-status-codes';
+import compression from 'compression';
 
 import { envConfig } from './config';
 import elasticSearch from './elasticsearch';
@@ -25,7 +26,7 @@ export default class ApiGatewayServer {
   public start() {
     this.securityMiddleware(this.app);
     this.standardMiddleware(this.app);
-    this.routeMiddleware(this.app);
+    this.routesMiddleware(this.app);
     this.startElasticSearch();
     this.errorHandler(this.app);
     this.startServer(this.app);
@@ -54,11 +55,12 @@ export default class ApiGatewayServer {
   }
 
   private standardMiddleware(app: Application) {
+    app.use(compression());
     app.use(urlencoded({ extended: true }));
     app.use(json());
   }
 
-  private routeMiddleware(app: Application) {
+  private routesMiddleware(app: Application) {
     app.use(healthRouter);
   }
 
@@ -74,12 +76,13 @@ export default class ApiGatewayServer {
       next();
     });
 
-    app.use((error: IErrorResponse, req: Request, res: Response, next: NextFunction) => {
+    app.use((error: IErrorResponse, _req: Request, res: Response, next: NextFunction) => {
       logger.log({ level: 'error', message: `GatewayService ${error.comingFrom}: ${error}` });
 
       if (error instanceof CustomError) {
         res.status(error.statusCode).json(error.serializeErrors());
       }
+      next();
     });
   }
 
