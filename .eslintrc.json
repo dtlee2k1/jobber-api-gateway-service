@@ -29,7 +29,7 @@
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "import/no-unresolved": 0,
     "import/order": [
-      "off",
+      "warn",
       {
         "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "type", "object"],
         "newlines-between": "always"
