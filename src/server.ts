@@ -13,6 +13,7 @@ import { envConfig } from './config';
 import elasticSearch from './elasticsearch';
 import healthRouter from './routes/health.routes';
 import { axiosAuthInstance } from './services/api/auth.service';
+import authRouter from './routes/auth.routes';
 
 const SERVER_PORT = 4000;
 const logger = winstonLogger(`${envConfig.ELASTIC_SEARCH_URL}`, 'apiGatewayServer', 'debug');
@@ -68,8 +69,13 @@ export default class ApiGatewayServer {
     app.use(json());
   }
 
+  // Frontend to API Gateway – http(s)://<host>:<port>/api/gateway/v1/auth
+  // API Gateway to Auth Service – http(s)://<api-gateway-host>:<port>/api/v1/auth
   private routesMiddleware(app: Application) {
+    const BASE_PATH = '/api/gateway/v1';
+
     app.use(healthRouter);
+    app.use(BASE_PATH, authRouter);
   }
 
   private async startElasticSearch() {
