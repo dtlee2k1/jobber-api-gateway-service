@@ -12,6 +12,7 @@ import compression from 'compression';
 import { envConfig } from './config';
 import elasticSearch from './elasticsearch';
 import healthRouter from './routes/health.routes';
+import { axiosAuthInstance } from './services/api/auth.service';
 
 const SERVER_PORT = 4000;
 const logger = winstonLogger(`${envConfig.ELASTIC_SEARCH_URL}`, 'apiGatewayServer', 'debug');
@@ -52,6 +53,13 @@ export default class ApiGatewayServer {
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
       })
     );
+
+    app.use((req: Request, _res: Response, next: NextFunction) => {
+      if (req.session?.jwt) {
+        axiosAuthInstance.defaults.headers['Authorization'] = `Bearer ${req.session.jwt}`;
+      }
+      next();
+    });
   }
 
   private standardMiddleware(app: Application) {

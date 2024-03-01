@@ -2,6 +2,7 @@ import { envConfig } from '@gateway/config';
 import axios, { AxiosInstance } from 'axios';
 import jwt from 'jsonwebtoken';
 
+// Each service has its own instance since each service has different base url therefore each instance is responsible for request(API or JWT token from client that is added to cookie session) that is going from the API gateway to the microservice
 export class AxiosService {
   public instance: AxiosInstance;
 
