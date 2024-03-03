@@ -1,5 +1,6 @@
 import http from 'http';
 
+import 'express-async-errors';
 import { CustomError, IErrorResponse, winstonLogger } from '@dtlee2k1/jobber-shared';
 import cookieSession from 'cookie-session';
 import { Application, NextFunction, Request, Response, json, urlencoded } from 'express';
@@ -14,6 +15,8 @@ import elasticSearch from './elasticsearch';
 import healthRouter from './routes/health.routes';
 import { axiosAuthInstance } from './services/api/auth.service';
 import authRouter from './routes/auth.routes';
+import currentUserRouter from './routes/current-user.routes';
+import authMiddleware from './services/auth-middleware';
 
 const SERVER_PORT = 4000;
 const logger = winstonLogger(`${envConfig.ELASTIC_SEARCH_URL}`, 'apiGatewayServer', 'debug');
@@ -76,6 +79,8 @@ export default class ApiGatewayServer {
 
     app.use(healthRouter);
     app.use(BASE_PATH, authRouter);
+
+    app.use(BASE_PATH, authMiddleware.verifyUser, currentUserRouter);
   }
 
   private async startElasticSearch() {
