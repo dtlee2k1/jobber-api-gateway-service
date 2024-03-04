@@ -14,7 +14,7 @@ authRouter.put('/auth/verify-email', updateVerifyToken);
 
 authRouter.put('/auth/forgot-password', forgotPassword);
 
-authRouter.put('/auth//reset-password/:token', resetPassword);
+authRouter.put('/auth/reset-password/:token', resetPassword);
 
 authRouter.put('/change-password', changePassword);
 
