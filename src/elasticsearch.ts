@@ -1,7 +1,6 @@
 import { winstonLogger } from '@dtlee2k1/jobber-shared';
 import { Client } from '@elastic/elasticsearch';
-
-import { envConfig } from './config';
+import { envConfig } from '@gateway/config';
 
 const logger = winstonLogger(`${envConfig.ELASTIC_SEARCH_URL}`, 'apiGatewayElasticSearchConnection', 'debug');
 

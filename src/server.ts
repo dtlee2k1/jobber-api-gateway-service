@@ -1,7 +1,7 @@
 import http from 'http';
 
 import 'express-async-errors';
-import { CustomError, IErrorResponse, winstonLogger } from '@dtlee2k1/jobber-shared';
+import { winstonLogger } from '@dtlee2k1/jobber-shared';
 import cookieSession from 'cookie-session';
 import { Application, NextFunction, Request, Response, json, urlencoded } from 'express';
 import helmet from 'helmet';
@@ -9,14 +9,14 @@ import hpp from 'hpp';
 import cors from 'cors';
 import { StatusCodes } from 'http-status-codes';
 import compression from 'compression';
-
-import { envConfig } from './config';
-import elasticSearch from './elasticsearch';
-import healthRouter from './routes/health.routes';
-import { axiosAuthInstance } from './services/api/auth.service';
-import authRouter from './routes/auth.routes';
-import currentUserRouter from './routes/current-user.routes';
-import authMiddleware from './services/auth-middleware';
+import { envConfig } from '@gateway/config';
+import elasticSearch from '@gateway/elasticsearch';
+import healthRouter from '@gateway/routes/health.routes';
+import { axiosAuthInstance } from '@gateway/services/api/auth.service';
+import authRouter from '@gateway/routes/auth.routes';
+import currentUserRouter from '@gateway/routes/current-user.routes';
+import authMiddleware from '@gateway/services/auth-middleware';
+import { CustomError, IErrorResponse } from '@gateway/error-handler';
 
 const SERVER_PORT = 4000;
 const logger = winstonLogger(`${envConfig.ELASTIC_SEARCH_URL}`, 'apiGatewayServer', 'debug');

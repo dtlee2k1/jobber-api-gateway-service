@@ -1,8 +1,7 @@
 import { AxiosInstance } from 'axios';
 import { envConfig } from '@gateway/config';
 import { IAuth } from '@dtlee2k1/jobber-shared';
-
-import { AxiosService } from '../axios';
+import { AxiosService } from '@gateway/services/axios';
 
 export let axiosAuthInstance: AxiosInstance;
 

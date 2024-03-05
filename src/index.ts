@@ -1,6 +1,5 @@
 import express from 'express';
-
-import ApiGatewayServer from './server';
+import ApiGatewayServer from '@gateway/server';
 
 class Application {
   public init() {

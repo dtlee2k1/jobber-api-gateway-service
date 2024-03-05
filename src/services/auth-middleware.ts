@@ -1,5 +1,6 @@
-import { IAuthPayload, NotAuthorizedError } from '@dtlee2k1/jobber-shared';
+import { IAuthPayload } from '@dtlee2k1/jobber-shared';
 import { envConfig } from '@gateway/config';
+import { NotAuthorizedError } from '@gateway/error-handler';
 import { NextFunction, Request, Response } from 'express';
 import { verify } from 'jsonwebtoken';
 
