@@ -69,7 +69,7 @@ class AuthService {
   }
 
   async seedingData(count: string) {
-    const response = await this.axiosService.instance.get(`/seed/${count}`);
+    const response = await this.axiosService.instance.put(`/seed/${count}`);
     return response;
   }
 }

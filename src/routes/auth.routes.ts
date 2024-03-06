@@ -1,4 +1,5 @@
 import { changePassword, forgotPassword, resetPassword } from '@gateway/controllers/auth/password';
+import { createSeedUsers } from '@gateway/controllers/auth/seeds';
 import { signIn } from '@gateway/controllers/auth/signin';
 import { signUp } from '@gateway/controllers/auth/signup';
 import { updateVerifyToken } from '@gateway/controllers/auth/verify-email';
@@ -17,5 +18,7 @@ authRouter.put('/auth/forgot-password', forgotPassword);
 authRouter.put('/auth/reset-password/:token', resetPassword);
 
 authRouter.put('/change-password', changePassword);
+
+authRouter.put('/auth/seed/:count', createSeedUsers);
 
 export default authRouter;
