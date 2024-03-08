@@ -13,6 +13,8 @@ import { envConfig } from '@gateway/config';
 import elasticSearch from '@gateway/elasticsearch';
 import healthRouter from '@gateway/routes/health.routes';
 import { axiosAuthInstance } from '@gateway/services/api/auth.service';
+import { axiosBuyerInstance } from '@gateway/services/api/buyer.service';
+import { axiosSellerInstance } from '@gateway/services/api/seller.service';
 import authRouter from '@gateway/routes/auth.routes';
 import currentUserRouter from '@gateway/routes/current-user.routes';
 import authMiddleware from '@gateway/services/auth-middleware';
@@ -62,6 +64,8 @@ export default class ApiGatewayServer {
     app.use((req: Request, _res: Response, next: NextFunction) => {
       if (req.session?.jwt) {
         axiosAuthInstance.defaults.headers['Authorization'] = `Bearer ${req.session.jwt}`;
+        axiosBuyerInstance.defaults.headers['Authorization'] = `Bearer ${req.session.jwt}`;
+        axiosSellerInstance.defaults.headers['Authorization'] = `Bearer ${req.session.jwt}`;
       }
       next();
     });
