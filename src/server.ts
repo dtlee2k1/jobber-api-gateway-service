@@ -20,6 +20,7 @@ import currentUserRouter from '@gateway/routes/current-user.routes';
 import authMiddleware from '@gateway/services/auth-middleware';
 import { CustomError, IErrorResponse } from '@gateway/error-handler';
 import searchRouter from '@gateway/routes/search.routes';
+import buyerRouter from '@gateway/routes/buyer.routes';
 
 const SERVER_PORT = 4000;
 const logger = winstonLogger(`${envConfig.ELASTIC_SEARCH_URL}`, 'apiGatewayServer', 'debug');
@@ -87,6 +88,7 @@ export default class ApiGatewayServer {
     app.use(BASE_PATH, searchRouter);
 
     app.use(BASE_PATH, authMiddleware.verifyUser, currentUserRouter);
+    app.use(BASE_PATH, authMiddleware.verifyUser, buyerRouter);
   }
 
   private async startElasticSearch() {
