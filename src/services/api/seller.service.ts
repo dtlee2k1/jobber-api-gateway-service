@@ -23,8 +23,8 @@ class SellerService {
     return response;
   }
 
-  async getRandomSellers() {
-    const response = await axiosSellerInstance.get('/random');
+  async getRandomSellers(size: string) {
+    const response = await axiosSellerInstance.get(`/random/${size}`);
     return response;
   }
 
