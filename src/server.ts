@@ -15,13 +15,15 @@ import healthRouter from '@gateway/routes/health.routes';
 import { axiosAuthInstance } from '@gateway/services/api/auth.service';
 import { axiosBuyerInstance } from '@gateway/services/api/buyer.service';
 import { axiosSellerInstance } from '@gateway/services/api/seller.service';
+import { axiosGigInstance } from '@gateway/services/api/gig.service';
+import authMiddleware from '@gateway/services/auth-middleware';
 import authRouter from '@gateway/routes/auth.routes';
 import currentUserRouter from '@gateway/routes/current-user.routes';
-import authMiddleware from '@gateway/services/auth-middleware';
-import { CustomError, IErrorResponse } from '@gateway/error-handler';
 import searchRouter from '@gateway/routes/search.routes';
 import buyerRouter from '@gateway/routes/buyer.routes';
 import sellerRouter from '@gateway/routes/seller.routes';
+import gigRouter from '@gateway/routes/gig.routes';
+import { CustomError, IErrorResponse } from '@gateway/error-handler';
 
 const SERVER_PORT = 4000;
 const logger = winstonLogger(`${envConfig.ELASTIC_SEARCH_URL}`, 'apiGatewayServer', 'debug');
@@ -68,6 +70,7 @@ export default class ApiGatewayServer {
         axiosAuthInstance.defaults.headers['Authorization'] = `Bearer ${req.session.jwt}`;
         axiosBuyerInstance.defaults.headers['Authorization'] = `Bearer ${req.session.jwt}`;
         axiosSellerInstance.defaults.headers['Authorization'] = `Bearer ${req.session.jwt}`;
+        axiosGigInstance.defaults.headers['Authorization'] = `Bearer ${req.session.jwt}`;
       }
       next();
     });
@@ -91,6 +94,7 @@ export default class ApiGatewayServer {
     app.use(BASE_PATH, authMiddleware.verifyUser, currentUserRouter);
     app.use(BASE_PATH, authMiddleware.verifyUser, buyerRouter);
     app.use(BASE_PATH, authMiddleware.verifyUser, sellerRouter);
+    app.use(BASE_PATH, authMiddleware.verifyUser, gigRouter);
   }
 
   private async startElasticSearch() {
