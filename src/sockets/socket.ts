@@ -1,0 +1,35 @@
+import { GatewayCache } from '@gateway/redis/gateway.cache';
+import { Server, Socket } from 'socket.io';
+
+export class SocketIOAppHandler {
+  private io: Server;
+  private gatewayCache: GatewayCache;
+
+  constructor(io: Server) {
+    this.io = io;
+    this.gatewayCache = new GatewayCache();
+  }
+
+  public listen() {
+    this.io.on('connection', async (socket: Socket) => {
+      socket.on('getLoggedInUsers', async () => {
+        const response: string[] = await this.gatewayCache.getLoggedInUsersFromCache('loggedInUsers');
+        socket.emit('online', response);
+      });
+
+      socket.on('saveLoggedInUser', async (username: string) => {
+        const response: string[] = await this.gatewayCache.saveLoggedInUserToCache('loggedInUsers', username);
+        socket.emit('online', response);
+      });
+
+      socket.on('removeLoggedInUser', async (username: string) => {
+        const response: string[] = await this.gatewayCache.removeLoggedInUserFromCache('loggedInUsers', username);
+        socket.emit('online', response);
+      });
+
+      socket.on('category', async (category: string, username: string) => {
+        await this.gatewayCache.saveUserSelectedGigCategory(`selectedCategories:${username}`, category);
+      });
+    });
+  }
+}

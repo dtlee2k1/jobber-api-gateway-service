@@ -24,6 +24,7 @@ import buyerRouter from '@gateway/routes/buyer.routes';
 import sellerRouter from '@gateway/routes/seller.routes';
 import gigRouter from '@gateway/routes/gig.routes';
 import { CustomError, IErrorResponse } from '@gateway/error-handler';
+import { SocketIOAppHandler } from '@gateway/sockets/socket';
 import { Server } from 'socket.io';
 import { createClient } from 'redis';
 import { createAdapter } from '@socket.io/redis-adapter';
@@ -169,6 +170,7 @@ export default class ApiGatewayServer {
 
   // SocketIO instances
   private async socketIOConnections(socketIO: Server) {
-    console.log(socketIO);
+    const socketIOApp = new SocketIOAppHandler(socketIO);
+    socketIOApp.listen();
   }
 }

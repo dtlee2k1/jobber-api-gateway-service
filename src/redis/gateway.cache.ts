@@ -5,7 +5,7 @@ import { createClient } from 'redis';
 type RedisClient = ReturnType<typeof createClient>;
 const logger = winstonLogger(`${envConfig.ELASTIC_SEARCH_URL}`, 'gatewayCache', 'debug');
 
-class GatewayCache {
+export class GatewayCache {
   client: RedisClient;
 
   constructor() {
@@ -69,6 +69,3 @@ class GatewayCache {
     }
   }
 }
-
-const gatewayCache = new GatewayCache();
-export default gatewayCache;
