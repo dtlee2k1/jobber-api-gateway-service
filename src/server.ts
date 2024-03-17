@@ -24,10 +24,14 @@ import buyerRouter from '@gateway/routes/buyer.routes';
 import sellerRouter from '@gateway/routes/seller.routes';
 import gigRouter from '@gateway/routes/gig.routes';
 import { CustomError, IErrorResponse } from '@gateway/error-handler';
+import { Server } from 'socket.io';
+import { createClient } from 'redis';
+import { createAdapter } from '@socket.io/redis-adapter';
 
 const SERVER_PORT = 4000;
 const logger = winstonLogger(`${envConfig.ELASTIC_SEARCH_URL}`, 'apiGatewayServer', 'debug');
 
+export let socketIO: Server;
 export default class ApiGatewayServer {
   private app: Application;
 
@@ -119,12 +123,36 @@ export default class ApiGatewayServer {
     });
   }
 
-  private startServer(app: Application) {
+  private async startServer(app: Application) {
     try {
       const httpServer = new http.Server(app);
+      const socketIO: Server = (await this.createSocketIO(httpServer)) as Server;
       this.startHttpServer(httpServer);
+      this.socketIOConnections(socketIO);
     } catch (error) {
       logger.log('error', 'GatewayService startServer() error method:', error);
+    }
+  }
+
+  private async createSocketIO(httpServer: http.Server) {
+    try {
+      const pubClient = createClient({ url: envConfig.REDIS_HOST });
+      const subClient = pubClient.duplicate();
+
+      await Promise.all([pubClient.connect(), subClient.connect()]);
+
+      const io = new Server(httpServer, {
+        cors: {
+          origin: envConfig.CLIENT_URL,
+          methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+        },
+        adapter: createAdapter(pubClient, subClient)
+      });
+
+      socketIO = io;
+      return io;
+    } catch (error) {
+      logger.log('error', 'GatewayService createSocketIO() error method:', error);
     }
   }
 
@@ -137,5 +165,10 @@ export default class ApiGatewayServer {
     } catch (error) {
       logger.log('error', 'GatewayService startServer() error method:', error);
     }
+  }
+
+  // SocketIO instances
+  private async socketIOConnections(socketIO: Server) {
+    console.log(socketIO);
   }
 }
