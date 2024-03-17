@@ -164,7 +164,7 @@ export default class ApiGatewayServer {
         logger.info(`Gateway server running on port ${SERVER_PORT}`);
       });
     } catch (error) {
-      logger.log('error', 'GatewayService startServer() error method:', error);
+      logger.log('error', 'GatewayService startHttpServer() error method:', error);
     }
   }
 
