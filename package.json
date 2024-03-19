@@ -19,7 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@dtlee2k1/jobber-shared": "^0.0.4",
+    "@dtlee2k1/jobber-shared": "^0.0.6",
     "@elastic/elasticsearch": "^8.12.2",
     "@socket.io/redis-adapter": "^8.3.0",
     "axios": "^1.6.7",

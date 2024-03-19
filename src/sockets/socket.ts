@@ -1,4 +1,4 @@
-import { IMessageDocument, winstonLogger } from '@dtlee2k1/jobber-shared';
+import { IMessageDocument, IOrderDocument, IOrderNotifcation, winstonLogger } from '@dtlee2k1/jobber-shared';
 import { envConfig } from '@gateway/config';
 import { GatewayCache } from '@gateway/redis/gateway.cache';
 import { Server, Socket } from 'socket.io';
@@ -6,6 +6,7 @@ import { io, Socket as SocketClient } from 'socket.io-client';
 
 const logger = winstonLogger(`${envConfig.ELASTIC_SEARCH_URL}`, 'gatewaySocket', 'debug');
 let chatSocketClient: SocketClient; // socket between Gateway service (client) and Chat service (server)
+let orderSocketClient: SocketClient;
 
 export class SocketIOAppHandler {
   private io: Server;
@@ -76,26 +77,29 @@ export class SocketIOAppHandler {
   }
 
   private orderSocketServiceIOConnections() {
-    chatSocketClient = io(`${envConfig.MESSAGE_BASE_URL}`, {
+    orderSocketClient = io(`${envConfig.ORDER_BASE_URL}`, {
       transports: ['websocket', 'polling'],
       secure: true
     });
 
-    chatSocketClient.on('connect', () => {
+    orderSocketClient.on('connect', () => {
       logger.info('OrderService socket connected');
     });
 
-    chatSocketClient.on('disconnect', (reason: SocketClient.DisconnectReason) => {
+    orderSocketClient.on('disconnect', (reason: SocketClient.DisconnectReason) => {
       logger.log('error', `OrderService socket connection error: ${reason}`);
 
-      chatSocketClient.connect();
+      orderSocketClient.connect();
     });
 
-    chatSocketClient.on('connect_error', (error: Error) => {
+    orderSocketClient.on('connect_error', (error: Error) => {
       logger.log('error', 'OrderService socket connection error:', error);
-      chatSocketClient.connect();
+      orderSocketClient.connect();
     });
 
-    // custom events
+    // custom event
+    orderSocketClient.on('order_notification', (data: IOrderDocument, orderNotification: IOrderNotifcation) => {
+      this.io.emit('order_notification', data, orderNotification);
+    });
   }
 }
