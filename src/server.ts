@@ -16,6 +16,7 @@ import { axiosAuthInstance } from '@gateway/services/api/auth.service';
 import { axiosBuyerInstance } from '@gateway/services/api/buyer.service';
 import { axiosSellerInstance } from '@gateway/services/api/seller.service';
 import { axiosGigInstance } from '@gateway/services/api/gig.service';
+import { axiosMessageInstance } from '@gateway/services/api/message.service';
 import authMiddleware from '@gateway/services/auth-middleware';
 import authRouter from '@gateway/routes/auth.routes';
 import currentUserRouter from '@gateway/routes/current-user.routes';
@@ -23,6 +24,7 @@ import searchRouter from '@gateway/routes/search.routes';
 import buyerRouter from '@gateway/routes/buyer.routes';
 import sellerRouter from '@gateway/routes/seller.routes';
 import gigRouter from '@gateway/routes/gig.routes';
+import messageRouter from '@gateway/routes/message.routes';
 import { CustomError, IErrorResponse } from '@gateway/error-handler';
 import { SocketIOAppHandler } from '@gateway/sockets/socket';
 import { Server } from 'socket.io';
@@ -76,6 +78,7 @@ export default class ApiGatewayServer {
         axiosBuyerInstance.defaults.headers['Authorization'] = `Bearer ${req.session.jwt}`;
         axiosSellerInstance.defaults.headers['Authorization'] = `Bearer ${req.session.jwt}`;
         axiosGigInstance.defaults.headers['Authorization'] = `Bearer ${req.session.jwt}`;
+        axiosMessageInstance.defaults.headers['Authorization'] = `Bearer ${req.session.jwt}`;
       }
       next();
     });
@@ -100,6 +103,7 @@ export default class ApiGatewayServer {
     app.use(BASE_PATH, authMiddleware.verifyUser, buyerRouter);
     app.use(BASE_PATH, authMiddleware.verifyUser, sellerRouter);
     app.use(BASE_PATH, authMiddleware.verifyUser, gigRouter);
+    app.use(BASE_PATH, authMiddleware.verifyUser, messageRouter);
   }
 
   private async startElasticSearch() {
