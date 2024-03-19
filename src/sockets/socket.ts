@@ -15,10 +15,12 @@ export class SocketIOAppHandler {
     this.io = io; // socket between Frontend (client) and Gateway service (server)
     this.gatewayCache = new GatewayCache();
     this.chatSocketServiceIOConnections();
+    this.orderSocketServiceIOConnections();
   }
 
   public listen() {
     this.chatSocketServiceIOConnections();
+    this.orderSocketServiceIOConnections();
 
     this.io.on('connection', async (socket: Socket) => {
       socket.on('getLoggedInUsers', async () => {
@@ -71,5 +73,29 @@ export class SocketIOAppHandler {
     chatSocketClient.on('message_updated', (data: IMessageDocument) => {
       this.io.emit('message_updated', data);
     });
+  }
+
+  private orderSocketServiceIOConnections() {
+    chatSocketClient = io(`${envConfig.MESSAGE_BASE_URL}`, {
+      transports: ['websocket', 'polling'],
+      secure: true
+    });
+
+    chatSocketClient.on('connect', () => {
+      logger.info('OrderService socket connected');
+    });
+
+    chatSocketClient.on('disconnect', (reason: SocketClient.DisconnectReason) => {
+      logger.log('error', `OrderService socket connection error: ${reason}`);
+
+      chatSocketClient.connect();
+    });
+
+    chatSocketClient.on('connect_error', (error: Error) => {
+      logger.log('error', 'OrderService socket connection error:', error);
+      chatSocketClient.connect();
+    });
+
+    // custom events
   }
 }
