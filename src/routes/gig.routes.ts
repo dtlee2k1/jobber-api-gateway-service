@@ -16,19 +16,19 @@ import { Router } from 'express';
 
 const gigRouter = Router();
 
-gigRouter.get('/:gigId', authMiddleware.checkAuthentication, gigById);
+gigRouter.get('/gig/:gigId', authMiddleware.checkAuthentication, gigById);
 
-gigRouter.get('/seller/:sellerId', authMiddleware.checkAuthentication, sellerGigs);
+gigRouter.get('/gig/seller/:sellerId', authMiddleware.checkAuthentication, sellerGigs);
 
-gigRouter.get('/seller/pause/:sellerId', authMiddleware.checkAuthentication, sellerInactiveGigs);
+gigRouter.get('/gig/seller/pause/:sellerId', authMiddleware.checkAuthentication, sellerInactiveGigs);
 
-gigRouter.get('/search/:from/:size/:type', authMiddleware.checkAuthentication, searchGigs);
+gigRouter.get('/gig/search/:from/:size/:type', authMiddleware.checkAuthentication, searchGigs);
 
-gigRouter.get('/top/:username', authMiddleware.checkAuthentication, topRatedGigsByCategory);
+gigRouter.get('/gig/top/:username', authMiddleware.checkAuthentication, topRatedGigsByCategory);
 
-gigRouter.get('/category/:username', authMiddleware.checkAuthentication, gigsByCategory);
+gigRouter.get('/gig/category/:username', authMiddleware.checkAuthentication, gigsByCategory);
 
-gigRouter.get('/similar/:gigId', authMiddleware.checkAuthentication, moreGigsLikeThis);
+gigRouter.get('/gig/similar/:gigId', authMiddleware.checkAuthentication, moreGigsLikeThis);
 
 gigRouter.post('/gig/create', authMiddleware.checkAuthentication, createGig);
 
