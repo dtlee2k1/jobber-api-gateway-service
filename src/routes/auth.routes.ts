@@ -17,7 +17,7 @@ authRouter.put('/auth/forgot-password', forgotPassword);
 
 authRouter.put('/auth/reset-password/:token', resetPassword);
 
-authRouter.put('/change-password', changePassword);
+authRouter.put('/auth/change-password', changePassword);
 
 authRouter.put('/auth/seed/:count', createSeedUsers);
 
