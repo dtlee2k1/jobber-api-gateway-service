@@ -6,7 +6,7 @@ export async function searchGigs(req: Request, res: Response, _next: NextFunctio
   const { from, size, type } = req.params;
   const queryString = new URLSearchParams(req.query as any).toString();
   const response = await gigService.searchGigs(queryString, from, size, type);
-  res.status(StatusCodes.OK).send({
+  res.status(StatusCodes.OK).json({
     message: response.data.message,
     gigs: response.data.gigs
   });

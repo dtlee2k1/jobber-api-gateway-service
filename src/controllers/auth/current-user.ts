@@ -8,7 +8,7 @@ const gatewayCache = new GatewayCache();
 
 export async function getCurrentUser(_req: Request, res: Response, _next: NextFunction) {
   const response = await authService.getCurrentUser();
-  res.status(StatusCodes.OK).send({
+  res.status(StatusCodes.OK).json({
     message: response.data.message,
     user: response.data.user
   });
@@ -16,7 +16,7 @@ export async function getCurrentUser(_req: Request, res: Response, _next: NextFu
 
 export async function resendEmail(req: Request, res: Response, _next: NextFunction) {
   const response = await authService.reSendEmail(req.body);
-  res.status(StatusCodes.OK).send({
+  res.status(StatusCodes.OK).json({
     message: response.data.message,
     user: response.data.user
   });
@@ -26,16 +26,16 @@ export async function getLoggedInUsers(_req: Request, res: Response, _next: Next
   const response: string[] = await gatewayCache.getLoggedInUsersFromCache('loggedInUsers');
   socketIO.emit('online', response);
 
-  res.status(StatusCodes.OK).send({
+  res.status(StatusCodes.OK).json({
     message: 'User is online'
   });
 }
 
 export async function removeLoggedInUser(req: Request, res: Response, _next: NextFunction) {
-  const response = await gatewayCache.removeLoggedInUserFromCache('loggedInUsers', req.params.username);
+  const response: string[] = await gatewayCache.removeLoggedInUserFromCache('loggedInUsers', req.params.username);
   socketIO.emit('online', response);
 
-  res.status(StatusCodes.OK).send({
+  res.status(StatusCodes.OK).json({
     message: 'User is offline'
   });
 }
