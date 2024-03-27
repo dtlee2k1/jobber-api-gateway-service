@@ -34,8 +34,10 @@ import orderRouter from '@gateway/routes/order.routes';
 import reviewRouter from '@gateway/routes/review.routes';
 import { CustomError, IErrorResponse } from '@gateway/error-handler';
 import { SocketIOAppHandler } from '@gateway/sockets/socket';
+import { isAxiosError } from 'axios';
 
 const SERVER_PORT = 4000;
+const DEFAULT_ERROR_CODE = 500;
 const logger = winstonLogger(`${envConfig.ELASTIC_SEARCH_URL}`, 'apiGatewayServer', 'debug');
 
 export let socketIO: Server;
@@ -132,6 +134,15 @@ export default class ApiGatewayServer {
       if (error instanceof CustomError) {
         res.status(error.statusCode).json(error.serializeErrors());
       }
+
+      if (isAxiosError(error)) {
+        logger.log({ level: 'error', message: `GatewayService Axios Error - ${error?.response?.data?.comingFrom}: ${error}` });
+
+        res
+          .status(error?.response?.data?.statusCode ?? DEFAULT_ERROR_CODE)
+          .json({ message: error?.response?.data?.message ?? 'Error occurred' });
+      }
+
       next();
     });
   }
