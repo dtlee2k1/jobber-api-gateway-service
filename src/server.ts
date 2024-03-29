@@ -64,8 +64,10 @@ export default class ApiGatewayServer {
         name: 'session',
         keys: [`${envConfig.SECRET_KEY_ONE}`, `${envConfig.SECRET_KEY_TWO}`],
         maxAge: 24 * 7 * 60 * 60 * 1000, // 7 days,
-        secure: envConfig.NODE_ENV !== 'development'
-        // sameSite: 'none'
+        secure: envConfig.NODE_ENV !== 'development',
+        ...(envConfig.NODE_ENV !== 'development' && {
+          sameSite: 'none'
+        })
       })
     );
     app.use(hpp());
