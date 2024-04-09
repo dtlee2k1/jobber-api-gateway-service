@@ -19,7 +19,7 @@ class GigService {
   }
 
   async getSellerGigs(sellerId: string) {
-    const response = await axiosGigInstance.get(`/seller//${sellerId}`);
+    const response = await axiosGigInstance.get(`/seller/${sellerId}`);
     return response;
   }
 

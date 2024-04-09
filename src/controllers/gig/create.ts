@@ -6,6 +6,6 @@ export async function createGig(req: Request, res: Response, _next: NextFunction
   const response = await gigService.createGig(req.body);
   res.status(StatusCodes.CREATED).json({
     message: response.data.message,
-    seller: response.data.gig
+    gig: response.data.gig
   });
 }

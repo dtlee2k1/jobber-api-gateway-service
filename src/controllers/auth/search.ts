@@ -16,6 +16,7 @@ export async function searchGigs(req: Request, res: Response, _next: NextFunctio
   const response = await authService.getGigs(queryString, from, size, type);
   res.status(StatusCodes.OK).json({
     message: response.data.message,
-    gigs: response.data.gigs
+    gigs: response.data.gigs,
+    total: response.data.total
   });
 }

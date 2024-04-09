@@ -3,10 +3,10 @@ import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
 export async function cancel(req: Request, res: Response, _next: NextFunction) {
-  const { paymentIntentId } = req.body;
+  const { paymentIntentId, orderData } = req.body;
   const { orderId } = req.params;
 
-  const response = await orderService.cancelOrder(paymentIntentId, orderId, req.body);
+  const response = await orderService.cancelOrder(paymentIntentId, orderId, orderData);
   res.status(StatusCodes.OK).json({
     message: response.data.message
   });
